@@ -9,14 +9,7 @@ import jakarta.validation.Valid
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -25,16 +18,20 @@ class TransactionController(private val transactionRepository: TransactionReposi
     @PostMapping
     fun create(@Valid @RequestBody request: CreateTransactionRequest): ResponseEntity<TransactionResponse> {
         val existing = transactionRepository.findByIdempotencyKey(request.idempotencyKey)
+
         if (existing != null) {
             return ResponseEntity.ok(TransactionResponse.from(existing))
         }
+
         val transaction = Transaction(
             idempotencyKey = request.idempotencyKey,
             description = request.description,
             amount = request.amount,
             type = request.type,
         )
+
         val saved = transactionRepository.save(transaction)
+
         return ResponseEntity.status(HttpStatus.CREATED).body(TransactionResponse.from(saved))
     }
 
@@ -48,6 +45,7 @@ class TransactionController(private val transactionRepository: TransactionReposi
     fun findById(@PathVariable id: String): ResponseEntity<TransactionResponse> {
         val transaction = transactionRepository.findByIdOrNull(id)
             ?: return ResponseEntity.notFound().build()
+
         return ResponseEntity.ok(TransactionResponse.from(transaction))
     }
 
@@ -58,12 +56,14 @@ class TransactionController(private val transactionRepository: TransactionReposi
     ): ResponseEntity<TransactionResponse> {
         val existing = transactionRepository.findByIdOrNull(id)
             ?: return ResponseEntity.notFound().build()
+
         val updated = existing.copy(
             description = request.description ?: existing.description,
             amount = request.amount ?: existing.amount,
             type = request.type ?: existing.type,
             status = request.status ?: existing.status,
         )
+
         val saved = transactionRepository.save(updated)
         return ResponseEntity.ok(TransactionResponse.from(saved))
     }

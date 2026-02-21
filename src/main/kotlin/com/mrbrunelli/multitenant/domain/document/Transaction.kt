@@ -24,7 +24,7 @@ data class Transaction(
     @TenantId
     @Indexed
     @Field("tenant_id")
-    val tenantId: String,
+    val tenantId: String? = null,
     @Field("idempotency_key")
     val idempotencyKey: String,
     val description: String,
