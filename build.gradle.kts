@@ -11,7 +11,7 @@ description = "Demo multi tenant project for Spring Boot"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(25)
+		languageVersion = JavaLanguageVersion.of(24)
 	}
 }
 
@@ -43,6 +43,7 @@ dependencies {
 }
 
 kotlin {
+	jvmToolchain(24)
 	compilerOptions {
 		freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
 	}
