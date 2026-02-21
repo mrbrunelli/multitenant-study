@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: multitenant
+  data:
+    mongodb:
+      uri: mongodb://root:example@localhost:27017/multitenant?authSource=admin
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
