@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: multitenant
+  data:
+    mongodb:
+      uri: mongodb://root:example@localhost:27017/multitenant?authSource=admin
