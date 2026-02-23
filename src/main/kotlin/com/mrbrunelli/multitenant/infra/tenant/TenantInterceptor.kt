@@ -9,17 +9,13 @@ import org.springframework.web.servlet.HandlerInterceptor
 @Component
 class TenantInterceptor : HandlerInterceptor {
 
-    companion object {
-        private const val HEADER_NAME = "X-Tenant-ID"
-    }
-
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val tenantId = request.getHeader(HEADER_NAME)
+        val tenantId = request.getHeader(TenantConfig.HEADER_NAME)
 
         if (tenantId.isNullOrBlank()) {
             response.status = HttpServletResponse.SC_BAD_REQUEST
             response.contentType = MediaType.APPLICATION_JSON_VALUE
-            response.writer.write("""{"error": "Missing or empty $HEADER_NAME header"}""")
+            response.writer.write("""{"error": "Missing or empty ${TenantConfig.HEADER_NAME} header"}""")
             return false
         }
 
