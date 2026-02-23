@@ -5,6 +5,7 @@ import com.mrbrunelli.multitenant.api.dto.TransactionResponse
 import com.mrbrunelli.multitenant.api.dto.UpdateTransactionRequest
 import com.mrbrunelli.multitenant.domain.document.Transaction
 import com.mrbrunelli.multitenant.domain.repository.TransactionRepository
+import com.mrbrunelli.multitenant.infra.tenant.TenantContext
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -19,7 +20,7 @@ class TransactionController(private val transactionRepository: TransactionReposi
 
     @PostMapping
     fun create(@Valid @RequestBody request: CreateTransactionRequest): ResponseEntity<TransactionResponse> {
-        val existing = transactionRepository.findByIdempotencyKey(request.idempotencyKey)
+        val existing = transactionRepository.findByIdempotencyKeyAndTenantId(request.idempotencyKey, TenantContext.get())
 
         if (existing != null) {
             return ResponseEntity.ok(TransactionResponse.from(existing))
