@@ -6,6 +6,8 @@ import com.mrbrunelli.multitenant.api.dto.UpdateTransactionRequest
 import com.mrbrunelli.multitenant.domain.document.Transaction
 import com.mrbrunelli.multitenant.domain.repository.TransactionRepository
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -36,8 +38,8 @@ class TransactionController(private val transactionRepository: TransactionReposi
     }
 
     @GetMapping
-    fun listAll(): ResponseEntity<List<TransactionResponse>> {
-        val transactions = transactionRepository.findAll()
+    fun listAll(pageable: Pageable): ResponseEntity<Page<TransactionResponse>> {
+        val transactions = transactionRepository.findAll(pageable)
         return ResponseEntity.ok(transactions.map(TransactionResponse::from))
     }
 
